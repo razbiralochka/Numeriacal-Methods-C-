@@ -421,6 +421,7 @@ private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e
 		x[2]= x[1] - f(x[1]) * (x[1] - x[0]) / (f(x[1]) - f(x[0]));
 		
 		Acc_t = abs(x[2] - x[1]);
+		x[0] = x[1]; 
 		x[1] = x[2];
 		N++;
 	} while (Acc_t >= Acc);
@@ -436,8 +437,8 @@ private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e
 	float x[4], q[4], w, Xr[2];
 	int N;
 	
-	x[2] = Convert::ToDouble(textBox1->Text);
-	x[0] = Convert::ToDouble(textBox2->Text);
+	x[0] = Convert::ToDouble(textBox1->Text);
+	x[2] = Convert::ToDouble(textBox2->Text);
 	x[1] = (x[0] + x[2]) / 2;
 
 	Acc = 0; Acc_t = 0; N = 0;
@@ -445,11 +446,13 @@ private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e
 
 	do 
 	{
+		//Разделённые разности
 		q[0] = (f(x[2]) - f(x[1])) / (x[2] - x[1]);
 		q[1] = (f(x[1]) - f(x[0])) / (x[1] - x[0]);
 		q[2] = (f(x[2]) - f(x[0])) / (x[2] - x[0]);
 		q[3] = (q[0] - q[1]) / (x[2] - x[1]);
 
+		//Из википедии
 		w = q[0] + q[2] - q[1];
 
 		Xr[0] = w + sqrt(w * w - 4 * f(x[2]) * q[3]);
@@ -458,12 +461,17 @@ private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e
 		if (abs(Xr[0]) > abs(Xr[1])) x[3] = x[2] - (2 * f(x[2]) / Xr[0]);
 		if (abs(Xr[1]) > abs(Xr[0])) x[3] = x[2] - (2 * f(x[2]) / Xr[1]);
 		
+		//Вычисление точности
 		Acc_t = abs(x[1] - x[0]);
 		
+		//Сдвиг значении
 		x[0] = x[1];
 		x[1] = x[2];
 		x[2] = x[3];
+
+		//Инкремент кол-ва итераци
 		N++;
+
 	} while (Acc_t >= Acc);
 
 	textBox4->Text = Convert::ToString(N);
